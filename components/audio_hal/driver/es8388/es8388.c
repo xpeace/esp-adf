@@ -291,10 +291,10 @@ esp_err_t es8388_init(audio_hal_codec_config_t *cfg)
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCPOWER, 0xFF);
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCCONTROL1, 0xbb); // MIC Left and Right channel PGA gain
     tmp = 0;
-    if (AUDIO_HAL_ADC_INPUT_LINE1 == cfg->adc_input) {
-        tmp = ADC_INPUT_LINPUT1_RINPUT1;
-    } else if (AUDIO_HAL_ADC_INPUT_LINE2 == cfg->adc_input) {
+    if (AUDIO_HAL_ADC_INPUT_LINE1 == cfg->adc_input) {    // A1S Inputs exchanged
         tmp = ADC_INPUT_LINPUT2_RINPUT2;
+    } else if (AUDIO_HAL_ADC_INPUT_LINE2 == cfg->adc_input) {
+        tmp = ADC_INPUT_LINPUT1_RINPUT1;
     } else {
         tmp = ADC_INPUT_DIFFERENCE;
     }
@@ -353,10 +353,10 @@ esp_err_t es8388_set_voice_volume(int volume)
     else if (volume > 100)
         volume = 100;
     volume /= 3;
-    res = es_write_reg(ES8388_ADDR, ES8388_DACCONTROL24, volume);
-    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL25, volume);
-    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL26, 0);
-    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL27, 0);
+    res =  es_write_reg(ES8388_ADDR, ES8388_DACCONTROL24, volume);   // LOUT1
+    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL25, volume);   // ROUT1
+    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL26, volume);   // LOUT2
+    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL27, volume);   // ROUT2 
     return res;
 }
 
