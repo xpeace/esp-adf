@@ -1,7 +1,7 @@
 /*
  * ESPRESSIF MIT License
  *
- * Copyright (c) 2020 <ESPRESSIF SYSTEMS (SHANGHAI) CO., LTD>
+ * Copyright (c) 2019 <ESPRESSIF SYSTEMS (SHANGHAI) CO., LTD>
  *
  * Permission is hereby granted for use on all ESPRESSIF SYSTEMS products, in which case,
  * it is free of charge, to any person obtaining a copy of this software and associated
@@ -25,20 +25,25 @@
 #ifndef _AUDIO_BOARD_DEFINITION_H_
 #define _AUDIO_BOARD_DEFINITION_H_
 
-#define BUTTON_VOLUP_ID           0
-#define BUTTON_VOLDOWN_ID         1
-#define BUTTON_MUTE_ID            2
-#define BUTTON_SET_ID             3
-
-#define PA_ENABLE_GPIO            GPIO_NUM_12
-#define ADC_DETECT_GPIO           GPIO_NUM_36
-#define BATTERY_DETECT_GPIO       GPIO_NUM_37
+#include "driver/touch_pad.h"
 
 #define SDCARD_OPEN_FILE_NUM_MAX  5
 #define SDCARD_INTR_GPIO          GPIO_NUM_34
 
+#define BUTTON_REC_ID             GPIO_NUM_36
+#define BUTTON_MODE_ID            GPIO_NUM_39
+#define BUTTON_SET_ID             TOUCH_PAD_NUM9
+#define BUTTON_PLAY_ID            TOUCH_PAD_NUM8
+#define BUTTON_VOLUP_ID           TOUCH_PAD_NUM7
+#define BUTTON_VOLDOWN_ID         TOUCH_PAD_NUM4
 
-extern audio_hal_func_t AUDIO_NEW_CODEC_DEFAULT_HANDLE;
+#define AUXIN_DETECT_GPIO         GPIO_NUM_12
+#define HEADPHONE_DETECT          GPIO_NUM_19
+#define PA_ENABLE_GPIO            GPIO_NUM_21
+
+#define GREEN_LED_GPIO            GPIO_NUM_22
+
+extern audio_hal_func_t AUDIO_CODEC_ES8388_DEFAULT_HANDLE;
 
 #define AUDIO_CODEC_DEFAULT_CONFIG(){                   \
         .adc_input  = AUDIO_HAL_ADC_INPUT_LINE1,        \
@@ -52,29 +57,39 @@ extern audio_hal_func_t AUDIO_NEW_CODEC_DEFAULT_HANDLE;
         },                                              \
 };
 
-#define INPUT_KEY_NUM     4
+#define INPUT_KEY_NUM     6
 
 #define INPUT_KEY_DEFAULT_INFO() {                      \
+     {                                                  \
+        .type = PERIPH_ID_BUTTON,                       \
+        .user_id = INPUT_KEY_USER_ID_REC,               \
+        .act_id = BUTTON_REC_ID,                        \
+    },                                                  \
     {                                                   \
-        .type = PERIPH_ID_ADC_BTN,                      \
+        .type = PERIPH_ID_BUTTON,                       \
+        .user_id = INPUT_KEY_USER_ID_MODE,              \
+        .act_id = BUTTON_MODE_ID,                       \
+    },                                                  \
+    {                                                   \
+        .type = PERIPH_ID_TOUCH,                        \
+        .user_id = INPUT_KEY_USER_ID_SET,               \
+        .act_id = BUTTON_SET_ID,                        \
+    },                                                  \
+    {                                                   \
+        .type = PERIPH_ID_TOUCH,                        \
+        .user_id = INPUT_KEY_USER_ID_PLAY,              \
+        .act_id = BUTTON_PLAY_ID,                       \
+    },                                                  \
+    {                                                   \
+        .type = PERIPH_ID_TOUCH,                        \
         .user_id = INPUT_KEY_USER_ID_VOLUP,             \
         .act_id = BUTTON_VOLUP_ID,                      \
     },                                                  \
     {                                                   \
-        .type = PERIPH_ID_ADC_BTN,                      \
+        .type = PERIPH_ID_TOUCH,                        \
         .user_id = INPUT_KEY_USER_ID_VOLDOWN,           \
         .act_id = BUTTON_VOLDOWN_ID,                    \
-    },                                                  \
-    {                                                   \
-        .type = PERIPH_ID_ADC_BTN,                      \
-        .user_id = INPUT_KEY_USER_ID_MUTE,              \
-        .act_id = BUTTON_MUTE_ID,                       \
-    },                                                  \
-    {                                                   \
-        .type = PERIPH_ID_ADC_BTN,                      \
-        .user_id = INPUT_KEY_USER_ID_SET,               \
-        .act_id = BUTTON_SET_ID,                        \
-    },                                                  \
+    }                                                   \
 }
 
 #endif

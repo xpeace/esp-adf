@@ -1,7 +1,7 @@
 /*
  * ESPRESSIF MIT License
  *
- * Copyright (c) 2020 <ESPRESSIF SYSTEMS (SHANGHAI) CO., LTD>
+ * Copyright (c) 2019 <ESPRESSIF SYSTEMS (SHANGHAI) CO., LTD>
  *
  * Permission is hereby granted for use on all ESPRESSIF SYSTEMS products, in which case,
  * it is free of charge, to any person obtaining a copy of this software and associated
@@ -29,7 +29,7 @@
 #include "audio_error.h"
 #include "audio_mem.h"
 
-static const char *TAG = "MY_BOARD_V1_0";
+static const char *TAG = "A1S_V2_3";
 
 esp_err_t get_i2c_pins(i2c_port_t port, i2c_config_t *i2c_config)
 {
@@ -49,22 +49,16 @@ esp_err_t get_i2c_pins(i2c_port_t port, i2c_config_t *i2c_config)
 esp_err_t get_i2s_pins(i2s_port_t port, i2s_pin_config_t *i2s_config)
 {
     AUDIO_NULL_CHECK(TAG, i2s_config, return ESP_FAIL);
-    if (port == I2S_NUM_0) {
-        i2s_config->bck_io_num = GPIO_NUM_4;
-        i2s_config->ws_io_num = GPIO_NUM_13;
-        i2s_config->data_out_num = GPIO_NUM_16;
-        i2s_config->data_in_num = GPIO_NUM_39;
-    } else if (port == I2S_NUM_1) {
-        i2s_config->bck_io_num = -1;
-        i2s_config->ws_io_num = -1;
-        i2s_config->data_out_num = -1;
-        i2s_config->data_in_num = -1;
+    if (port == I2S_NUM_0 || port == I2S_NUM_1) {
+        i2s_config->bck_io_num = GPIO_NUM_5;
+        i2s_config->ws_io_num = GPIO_NUM_25;
+        i2s_config->data_out_num = GPIO_NUM_26;
+        i2s_config->data_in_num = GPIO_NUM_35;
     } else {
         memset(i2s_config, -1, sizeof(i2s_pin_config_t));
         ESP_LOGE(TAG, "i2s port %d is not supported", port);
         return ESP_FAIL;
     }
-
     return ESP_OK;
 }
 
@@ -134,6 +128,47 @@ int8_t get_sdcard_open_file_num_max(void)
     return SDCARD_OPEN_FILE_NUM_MAX;
 }
 
+// input-output pins
+
+int8_t get_auxin_detect_gpio(void)
+{
+    return AUXIN_DETECT_GPIO;
+}
+
+int8_t get_headphone_detect_gpio(void)
+{
+    return HEADPHONE_DETECT;
+}
+
+int8_t get_pa_enable_gpio(void)
+{
+    return PA_ENABLE_GPIO;
+}
+
+// button pins
+
+int8_t get_input_rec_id(void)
+{
+    return BUTTON_REC_ID;
+}
+
+int8_t get_input_mode_id(void)
+{
+    return BUTTON_MODE_ID;
+}
+
+// touch pins
+
+int8_t get_input_set_id(void)
+{
+    return BUTTON_SET_ID;
+}
+
+int8_t get_input_play_id(void)
+{
+    return BUTTON_PLAY_ID;
+}
+
 int8_t get_input_volup_id(void)
 {
     return BUTTON_VOLUP_ID;
@@ -144,7 +179,9 @@ int8_t get_input_voldown_id(void)
     return BUTTON_VOLDOWN_ID;
 }
 
-int8_t get_pa_enable_gpio(void)
+// led pins
+
+int8_t get_green_led_gpio(void)
 {
-    return PA_ENABLE_GPIO;
+    return GREEN_LED_GPIO;
 }

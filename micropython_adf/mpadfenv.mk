@@ -36,6 +36,9 @@ endif
 ifdef CONFIG_ESP_LYRAT_MINI_V1_1_BOARD
 INC_ESPCOMP += -I$(ADFCOMP)/audio_board/lyrat_mini_v1_1
 endif
+ifdef CONFIG_ESP_AI_THINKER_V2_3_BOARD
+INC_ESPCOMP += -I$(ADFCOMP)/audio_board/ai_thinker_audio_kit_v2_3
+endif
 INC_ESPCOMP += -I$(ADFCOMP)/audio_hal/include
 INC_ESPCOMP += -I$(ADFCOMP)/audio_hal/driver/include
 INC_ESPCOMP += -I$(ADFCOMP)/audio_hal/driver/es8388

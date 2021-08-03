@@ -268,11 +268,11 @@ esp_err_t es8388_init(audio_hal_codec_config_t *cfg)
 
     /* dac */
     res |= es_write_reg(ES8388_ADDR, ES8388_DACPOWER, 0xC0);  //disable DAC and disable Lout/Rout/1/2
-    res |= es_write_reg(ES8388_ADDR, ES8388_CONTROL1, 0x12);  //Enfr=0,Play&Record Mode,(0x17-both of mic&paly)
+    res |= es_write_reg(ES8388_ADDR, ES8388_CONTROL1, 0x17);  //Enfr=0,Play&Record Mode,(0x17-both of mic&paly)
 //    res |= es_write_reg(ES8388_ADDR, ES8388_CONTROL2, 0);  //LPVrefBuf=0,Pdn_ana=0
     res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL1, 0x18);//1a 0x18:16bit iis , 0x00:24
     res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL2, 0x02);  //DACFsMode,SINGLE SPEED; DACFsRatio,256
-    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL16, 0x00); // 0x00 audio on LIN1&RIN1,  0x09 LIN2&RIN2
+    res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL16, 0x00); // 0x00 audio on LIN1&RIN1,  0x09 LIN2&RIN2, 1b after mic preamp
     res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL17, 0x90); // only left DAC to left mixer enable 0db
     res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL20, 0x90); // only right DAC to right mixer enable 0db
     res |= es_write_reg(ES8388_ADDR, ES8388_DACCONTROL21, 0x80); //set internal ADC and DAC use the same LRCK clock, ADC LRCK as internal LRCK
@@ -291,6 +291,7 @@ esp_err_t es8388_init(audio_hal_codec_config_t *cfg)
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCPOWER, 0xFF);
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCCONTROL1, 0xbb); // MIC Left and Right channel PGA gain
     tmp = 0;
+#ifdef CONFIG_ESP_AI_THINKER_V2_3_BOARD
     if (AUDIO_HAL_ADC_INPUT_LINE1 == cfg->adc_input) {    // A1S Inputs exchanged
         tmp = ADC_INPUT_LINPUT2_RINPUT2;
     } else if (AUDIO_HAL_ADC_INPUT_LINE2 == cfg->adc_input) {
@@ -298,6 +299,15 @@ esp_err_t es8388_init(audio_hal_codec_config_t *cfg)
     } else {
         tmp = ADC_INPUT_DIFFERENCE;
     }
+#else
+    if (AUDIO_HAL_ADC_INPUT_LINE1 == cfg->adc_input) {    // A1S Inputs exchanged
+        tmp = ADC_INPUT_LINPUT2_RINPUT1;
+    } else if (AUDIO_HAL_ADC_INPUT_LINE2 == cfg->adc_input) {
+        tmp = ADC_INPUT_LINPUT1_RINPUT2;
+    } else {
+        tmp = ADC_INPUT_DIFFERENCE;
+    }
+#endif
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCCONTROL2, tmp);  //0x00 LINSEL & RINSEL, LIN1/RIN1 as ADC Input; DSSEL,use one DS Reg11; DSR, LINPUT1-RINPUT1
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCCONTROL3, 0x02);
     res |= es_write_reg(ES8388_ADDR, ES8388_ADCCONTROL4, 0x0d); // Left/Right data, Left/Right justified mode, Bits length, I2S format
