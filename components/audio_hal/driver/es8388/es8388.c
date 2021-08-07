@@ -126,7 +126,6 @@ static int es8388_set_adc_dac_volume(int mode, int volume, int dot)
     return res;
 }
 
-
 /**
  * @brief Power Management
  *
@@ -207,7 +206,6 @@ esp_err_t es8388_stop(es_module_t mode)
 
     return res;
 }
-
 
 /**
  * @brief Config I2s clock in MSATER mode
